@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install fastapi uvicorn python-multipart requests numpy opencv-python-headless pytest httpx
+      - name: Unit tests
+        run: pytest -q
+      - name: Front-end syntax
+        run: for f in web/js/*.js; do node --check "$f"; done
+      - name: Launcher notebook is up to date
+        run: |
+          python tools/build_notebook.py notebooks/launcher_source.py /tmp/check.ipynb
+          python -c "import json;a=json.load(open('/tmp/check.ipynb'));b=json.load(open('notebooks/Clipora_Launcher.ipynb'));assert a==b,'Rebuild the notebook: python tools/build_notebook.py notebooks/launcher_source.py notebooks/Clipora_Launcher.ipynb'"

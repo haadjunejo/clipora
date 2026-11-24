@@ -1,0 +1,14 @@
+# Web server
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+requests>=2.31
+# Clipping engine
+yt-dlp[default]
+faster-whisper>=1.1
+opencv-python-headless>=4.8
+numpy
+# Optional: local fallback AI on the GPU (already installed on Kaggle/Colab)
+# torch
+# transformers
+# accelerate
